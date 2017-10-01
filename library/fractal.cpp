@@ -11,7 +11,12 @@ void Fractal::setSize(int width, int height)
     this->width = width;
     this->height = height;
     delete[] grayBuffer;
-    grayBuffer = new uint8_t[width*height*3]();
+    grayBuffer = new uint8_t[width*height]();
+}
+
+void Fractal::setIterations(int iteration)
+{
+    this->iterationMax = iteration;
 }
 
 void Fractal::fillRgb(uint8_t *bufferRgb)

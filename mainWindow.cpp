@@ -10,13 +10,13 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->horizontalLayout->setStretch(0, 1);
+    ui->paintButton->setMinimumWidth(150);
+
+    ui->widthSpinBox->setValue(600);
+    ui->heightSpinBox->setValue(600);
+    ui->iterationSpinBox->setValue(50);
 
     mandelbrot = new Mandelbrot;
-    mandelbrot->setSize(500, 500);
-    rgb = new uint8_t[500 * 500 * 3];
-    mandelbrot->calculate();
-    mandelbrot->fillRgb(rgb);
-    ui->paintWidget->setImage(rgb, 500, 500);
 }
 
 MainWindow::~MainWindow()
@@ -34,5 +34,15 @@ void MainWindow::on_paintButton_clicked()
 {
     qDebug() << "MainWindow::on_paintButton_clicked(): Painting";
     ui->statusBar->showMessage("Painting", 3000);
+
+    int w = ui->widthSpinBox->value();
+    int h = ui->heightSpinBox->value();
+    mandelbrot->setSize(w, h);
+    mandelbrot->setIterations(ui->iterationSpinBox->value());
+    delete rgb;
+    rgb = new uint8_t[w * h * 3];
+    mandelbrot->calculate();
+    mandelbrot->fillRgb(rgb);
+    ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
 }

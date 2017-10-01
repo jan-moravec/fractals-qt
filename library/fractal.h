@@ -8,6 +8,7 @@ class Fractal
 public:
     Fractal();
     void setSize(int width, int height);
+    void setIterations(int iteration);
 
     virtual void calculate() = 0;
     virtual void fillRgb(uint8_t *bufferRgb);
@@ -15,6 +16,7 @@ public:
 protected:
     int width = 0;
     int height = 0;
+    int iterationMax = 0;
     uint8_t *grayBuffer = nullptr;
 
 };
