@@ -15,6 +15,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_paintButton_clicked();
+
+private:
+    virtual void paintEvent(QPaintEvent *event);
+
 private:
     Ui::MainWindow *ui;
 };
