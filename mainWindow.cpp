@@ -2,6 +2,7 @@
 #include "ui_mainWindow.h"
 #include <QDebug>
 
+#include "library/palette.h"
 #include "library/mandelbrot.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,18 +11,24 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->horizontalLayout->setStretch(0, 1);
-    ui->paintButton->setMinimumWidth(150);
+    ui->paintButton->setMinimumWidth(250);
 
-    ui->widthSpinBox->setValue(600);
-    ui->heightSpinBox->setValue(600);
+    ui->widthSpinBox->setValue(1600);
+    ui->heightSpinBox->setValue(1200);
     ui->iterationSpinBox->setValue(50);
 
+    palette = new Palette;
     mandelbrot = new Mandelbrot;
+
+    for (int i = 0; i < palette->getCount(); ++i) {
+        ui->paletteComboBox->addItem(QString(palette->getPalette(i).name.c_str()));
+    }
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete palette;
     delete rgb;
 }
 
@@ -42,7 +49,12 @@ void MainWindow::on_paintButton_clicked()
     delete rgb;
     rgb = new uint8_t[w * h * 3];
     mandelbrot->calculate();
-    mandelbrot->fillRgb(rgb);
+    mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
+}
+
+void MainWindow::on_paletteComboBox_currentIndexChanged(int index)
+{
+    palette->setCurrent(index);
 }

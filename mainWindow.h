@@ -19,12 +19,15 @@ public:
 private slots:
     void on_paintButton_clicked();
 
+    void on_paletteComboBox_currentIndexChanged(int index);
+
 private:
     virtual void paintEvent(QPaintEvent *event);
 
 private:
     Ui::MainWindow *ui;
     uint8_t *rgb;
+    Palette *palette;
     Fractal *mandelbrot;
 };
 

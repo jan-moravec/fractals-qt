@@ -81,6 +81,20 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="paletteHorizontalLayout">
+        <item>
+         <widget class="QLabel" name="paletteLabel">
+          <property name="text">
+           <string>Palette</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="paletteComboBox"/>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QPushButton" name="paintButton">
         <property name="text">
          <string>Paint</string>

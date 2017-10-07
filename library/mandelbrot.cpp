@@ -1,6 +1,7 @@
 #include "mandelbrot.h"
 #include <complex>
 #include <iostream>
+
 Mandelbrot::Mandelbrot() : Fractal()
 {
 
@@ -8,6 +9,8 @@ Mandelbrot::Mandelbrot() : Fractal()
 
 void Mandelbrot::calculate()
 {
+    double step = 255.0 / iterationMax;
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             double c_re = (x - width/2.0) * 4.0/width;
@@ -21,12 +24,7 @@ void Mandelbrot::calculate()
                 iteration++;
             }
 
-
-            if (iteration < iterationMax) {
-                grayBuffer[width*y + x] = 255;
-            } else {
-                grayBuffer[width*y + x] = 0;
-            }
+            grayBuffer[width*y + x] = iteration * step;
         }
     }
 }

@@ -2,16 +2,18 @@
 #define FRACTAL_H
 
 #include <stdint.h>
+#include "library/palette.h"
 
 class Fractal
 {
 public:
     Fractal();
+    ~Fractal();
     void setSize(int width, int height);
     void setIterations(int iteration);
 
     virtual void calculate() = 0;
-    virtual void fillRgb(uint8_t *bufferRgb);
+    virtual void fillRgb(uint8_t *bufferRgb, const Palette::PaletteStruct &palette);
 
 protected:
     int width = 0;
