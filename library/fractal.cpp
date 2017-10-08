@@ -27,48 +27,32 @@ void Fractal::setIterations(int iteration)
 
 void Fractal::setZoom(int x, int y, double scale)
 {
-    /*if (x < 0) {
-        x = 0;
-    } else if (x > width) {
-        x = width;
-    }
-
-    if (y < 0) {
-        y = 0;
-    } else if (y > height) {
-        y = height;
-    }*/
-
-    if (scale < 1.0) {
-        scale = 1.0;
-    }
-
     zoom.x = x;
     zoom.y = y;
     zoom.scale = scale;
 }
 
-void Fractal::addZoom(int x, int y, double scale)
+void Fractal::zoomIn(int x, int y, double scale)
 {
-    if (x < 0) {
-        x = 0;
-    } else if (x > width) {
-        x = width;
-    }
-
-    if (y < 0) {
-        y = 0;
-    } else if (y > height) {
-        y = height;
-    }
-
-    if (scale < 1.0) {
-        scale = 1.0;
-    }
+    zoomHistory.push_back(zoom);
 
     zoom.x += x / zoom.scale;
     zoom.y += y / zoom.scale;
     zoom.scale *= scale;
+}
+
+void Fractal::zoomOut(void)
+{
+    if (zoomHistory.size() == 0) {
+        return;
+    }
+
+    Zoom z = zoomHistory.back();
+    zoomHistory.pop_back();
+
+    zoom.x = z.x;
+    zoom.y = z.y;
+    zoom.scale = z.scale;
 }
 
 Fractal::Zoom Fractal::getZoom()

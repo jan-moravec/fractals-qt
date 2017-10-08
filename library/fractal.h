@@ -18,7 +18,8 @@ public:
         double scale = 1.0;
     };
     void setZoom(int x, int y, double scale);
-    void addZoom(int x, int y, double scale);
+    void zoomIn(int x, int y, double scale);
+    void zoomOut(void);
     Zoom getZoom();
 
     virtual void calculate() = 0;
@@ -30,6 +31,7 @@ protected:
     int iterationMax = 0;
     uint8_t *grayBuffer = nullptr;
     Zoom zoom;
+    std::vector<Zoom> zoomHistory;
 };
 
 #endif // FRACTAL_H

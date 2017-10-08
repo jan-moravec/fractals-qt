@@ -32,27 +32,26 @@ MainWindow::~MainWindow()
     delete rgb;
 }
 
-void MainWindow::paintEvent(QPaintEvent *event)
+void MainWindow::paintFractal(void)
 {
-    QMainWindow::paintEvent(event);
-}
-
-void MainWindow::on_paintButton_clicked()
-{
-    qDebug() << "MainWindow::on_paintButton_clicked(): Painting";
     ui->statusBar->showMessage("Painting", 3000);
 
     int w = ui->widthSpinBox->value();
     int h = ui->heightSpinBox->value();
     mandelbrot->setSize(w, h);
     mandelbrot->setIterations(ui->iterationSpinBox->value());
-    mandelbrot->addZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
     mandelbrot->calculate();
     delete rgb;
     rgb = new uint8_t[w * h * 3];
     mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
+}
+
+void MainWindow::on_paintButton_clicked()
+{
+    qDebug() << "MainWindow::on_paintButton_clicked(): Painting";
+    paintFractal();
 }
 
 void MainWindow::on_paletteComboBox_currentIndexChanged(int index)
@@ -73,4 +72,16 @@ void MainWindow::on_ZoomYSpinBox_valueChanged(int)
 void MainWindow::on_ZoomScaleDoubleSpinBox_valueChanged(double)
 {
     ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+}
+
+void MainWindow::on_zoomInPushButton_clicked()
+{
+    mandelbrot->zoomIn(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+    paintFractal();
+}
+
+void MainWindow::on_zoomOutPushButton_clicked()
+{
+    mandelbrot->zoomOut();
+    paintFractal();
 }

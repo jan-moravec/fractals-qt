@@ -27,14 +27,17 @@ private slots:
 
     void on_ZoomScaleDoubleSpinBox_valueChanged(double arg1);
 
-private:
-    virtual void paintEvent(QPaintEvent *event);
+    void on_zoomInPushButton_clicked();
+
+    void on_zoomOutPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     uint8_t *rgb;
     Palette *palette;
     Fractal *mandelbrot;
+
+    void paintFractal(void);
 };
 
 #endif // MAINWINDOW_H
