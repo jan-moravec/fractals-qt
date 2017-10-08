@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalLayout->setStretch(0, 1);
     ui->paintButton->setMinimumWidth(250);
 
-    ui->widthSpinBox->setValue(1600);
-    ui->heightSpinBox->setValue(1200);
+    ui->widthSpinBox->setValue(800);
+    ui->heightSpinBox->setValue(600);
     ui->iterationSpinBox->setValue(50);
 
     palette = new Palette;
@@ -46,9 +46,10 @@ void MainWindow::on_paintButton_clicked()
     int h = ui->heightSpinBox->value();
     mandelbrot->setSize(w, h);
     mandelbrot->setIterations(ui->iterationSpinBox->value());
+    mandelbrot->addZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+    mandelbrot->calculate();
     delete rgb;
     rgb = new uint8_t[w * h * 3];
-    mandelbrot->calculate();
     mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
@@ -57,4 +58,19 @@ void MainWindow::on_paintButton_clicked()
 void MainWindow::on_paletteComboBox_currentIndexChanged(int index)
 {
     palette->setCurrent(index);
+}
+
+void MainWindow::on_ZommXSpinBox_valueChanged(int)
+{
+    ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+}
+
+void MainWindow::on_ZoomYSpinBox_valueChanged(int)
+{
+    ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+}
+
+void MainWindow::on_ZoomScaleDoubleSpinBox_valueChanged(double)
+{
+    ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
 }

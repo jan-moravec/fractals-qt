@@ -95,6 +95,72 @@
        </layout>
       </item>
       <item>
+       <layout class="QHBoxLayout" name="zoomXHorizontalLayout">
+        <item>
+         <widget class="QLabel" name="zoomXLabel">
+          <property name="text">
+           <string>Zoom X</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="ZommXSpinBox">
+          <property name="maximum">
+           <number>99999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="ZoomYHorizontalLayout">
+        <item>
+         <widget class="QLabel" name="ZoomYLabel">
+          <property name="text">
+           <string>Zoom Y</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="ZoomYSpinBox">
+          <property name="maximum">
+           <number>99999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="ZoomScaleHorizontalLayout">
+        <item>
+         <widget class="QLabel" name="ZoomSaleLabel">
+          <property name="text">
+           <string>Zoom Scale</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="ZoomScaleDoubleSpinBox">
+          <property name="decimals">
+           <number>3</number>
+          </property>
+          <property name="minimum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QPushButton" name="paintButton">
         <property name="text">
          <string>Paint</string>

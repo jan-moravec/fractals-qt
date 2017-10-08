@@ -13,8 +13,9 @@ void Mandelbrot::calculate()
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            double c_re = (x - width/2.0) * 4.0/width;
-            double c_im = (y - height/2.0) * 4.0/width;
+            // (-2, 2)
+            double c_re = (4.0*x/width / zoom.scale + 4.0*zoom.x/width - 2.0);
+            double c_im = (4.0*y/width / zoom.scale + 4.0*zoom.y/width - 2.0*height/width);
             std::complex<double> c = {c_re, c_im};
             std::complex<double> z = 0;
 

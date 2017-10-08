@@ -21,6 +21,12 @@ private slots:
 
     void on_paletteComboBox_currentIndexChanged(int index);
 
+    void on_ZommXSpinBox_valueChanged(int arg1);
+
+    void on_ZoomYSpinBox_valueChanged(int arg1);
+
+    void on_ZoomScaleDoubleSpinBox_valueChanged(double arg1);
+
 private:
     virtual void paintEvent(QPaintEvent *event);
 
