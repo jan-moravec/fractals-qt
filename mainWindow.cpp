@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0; i < palette->getCount(); ++i) {
         ui->paletteComboBox->addItem(QString(palette->getPalette(i).name.c_str()));
     }
+
+    connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
 }
 
 MainWindow::~MainWindow()
@@ -84,4 +86,11 @@ void MainWindow::on_zoomOutPushButton_clicked()
 {
     mandelbrot->zoomOut();
     paintFractal();
+}
+
+void MainWindow::zoomChangedSlot(int x, int y, double scale)
+{
+    ui->ZommXSpinBox->setValue(x);
+    ui->ZoomYSpinBox->setValue(y);
+    ui->ZoomScaleDoubleSpinBox->setValue(scale);
 }

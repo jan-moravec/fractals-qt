@@ -1,8 +1,9 @@
 #include "paintWidget.h"
 #include <QPainter>
 #include <QDebug>
+#include <QMouseEvent>
 
-PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent), image(new QImage), zoomRect(new QRect)
+PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent), image(new QImage), zoomRect(new QRect), zoomRectMouse(new QRect)
 {
 }
 
@@ -24,7 +25,6 @@ void PaintWidget::paintEvent(QPaintEvent *event)
     QImage imScaled = image->scaled(this->size(), Qt::KeepAspectRatio);
 
     int offsetX = 0, offsetY = 0;
-    double scale = (double)imScaled.width() / image->width();
     if (imScaled.width() < this->width()) {
         offsetX = (this->width() - imScaled.width()) / 2;
     }
@@ -32,19 +32,14 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         offsetY = (this->height() - imScaled.height()) / 2;
     }
 
-    int x, y, w, h;
+    /*int x, y, w, h;
+    double scale = (double)imScaled.width() / image->width();
     x = zoomRect->x()*scale + offsetX;
     y = zoomRect->y()*scale + offsetY;
     w = zoomRect->width()*scale;
-    h = zoomRect->height()*scale;
+    h = zoomRect->height()*scale;*/
 
-    /*rectZoom.setWidth(rectZoom.width()*scale);
-    rectZoom.setHeight(rectZoom.height()*scale);
-    rectZoom.setX(rectZoom.x()*scale);
-    rectZoom.setY(rectZoom.y()*scale);*/
-    //rectZoom.adjust(offsetX, offsetY, offsetX, offsetY);
-
-    QRect rectZoom(x, y, w, h);
+    QRect rectZoom = recalculateZoomPaint(*zoomRect);
 
     QPainter painter(this);
     painter.drawImage(offsetX, offsetY, imScaled);
@@ -70,4 +65,94 @@ void PaintWidget::drawZoom(int x, int y, double scale)
 
     zoomRect->setRect(x, y, image->width()/scale, image->height()/scale);
     this->update();
+}
+
+QRect PaintWidget::recalculateZoomPaint(const QRect &zoomFractal)
+{
+    double scale = 1.0;
+    double scaleX = (double)this->width() / image->width();
+    double scaleY = (double)this->height() / image->height();
+    if (scaleX < scaleY) {
+        scale = scaleX;
+    } else {
+        scale = scaleY;
+    }
+
+    int offsetX = 0, offsetY = 0;
+    if (image->width()*scale < this->width()) {
+        offsetX = (this->width() - image->width()*scale) / 2;
+    }
+    if (image->height()*scale < this->height()) {
+        offsetY = (this->height() - image->height()*scale) / 2;
+    }
+
+    int x, y, w, h;
+    x = zoomFractal.x()*scale + offsetX;
+    y = zoomFractal.y()*scale + offsetY;
+    w = zoomFractal.width()*scale;
+    h = zoomFractal.height()*scale;
+
+    return QRect(x, y, w, h);
+}
+
+QRect PaintWidget::recalculateZoomFractal(const QRect &zoomImage)
+{
+    double scale = 1.0;
+    double scaleX = (double)this->width() / image->width();
+    double scaleY = (double)this->height() / image->height();
+    if (scaleX < scaleY) {
+        scale = scaleX;
+    } else {
+        scale = scaleY;
+    }
+
+    int offsetX = 0, offsetY = 0;
+    if (image->width()*scale < this->width()) {
+        offsetX = (this->width() - image->width()*scale) / 2;
+    }
+    if (image->height()*scale < this->height()) {
+        offsetY = (this->height() - image->height()*scale) / 2;
+    }
+
+    int x, y, w, h;
+    x = (zoomImage.x() - offsetX) / scale;
+    y = (zoomImage.y() - offsetY) / scale;
+    w = zoomImage.width()/scale;
+    h = zoomImage.height()/scale;
+
+    return QRect(x, y, w, h);
+}
+
+void PaintWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (image->isNull()) {
+        return;
+    }
+
+    *zoomRectMouse = QRect(event->pos(), event->pos());
+    *zoomRect = recalculateZoomFractal(*zoomRectMouse);
+    this->update();
+}
+
+void PaintWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (image->isNull()) {
+        return;
+    }
+
+    zoomRectMouse->setCoords(zoomRectMouse->x(), zoomRectMouse->y(), event->pos().x(), event->pos().y());
+    *zoomRect = recalculateZoomFractal(*zoomRectMouse);
+    this->update();
+}
+
+void PaintWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (image->isNull()) {
+        return;
+    }
+
+    // Adjust ratio
+    double scale = (double)image->width() / zoomRect->width();
+    drawZoom(zoomRect->x(), zoomRect->y(), scale);
+    emit zoomMouseSignal(zoomRect->x(), zoomRect->y(), scale);
 }

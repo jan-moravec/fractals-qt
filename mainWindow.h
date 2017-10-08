@@ -17,18 +17,14 @@ public:
     ~MainWindow();
 
 private slots:
+    void zoomChangedSlot(int x, int y, double scale);
+
     void on_paintButton_clicked();
-
     void on_paletteComboBox_currentIndexChanged(int index);
-
     void on_ZommXSpinBox_valueChanged(int arg1);
-
     void on_ZoomYSpinBox_valueChanged(int arg1);
-
     void on_ZoomScaleDoubleSpinBox_valueChanged(double arg1);
-
     void on_zoomInPushButton_clicked();
-
     void on_zoomOutPushButton_clicked();
 
 private:
