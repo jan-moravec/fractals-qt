@@ -25,7 +25,7 @@ void Fractal::setIterations(int iteration)
     this->iterationMax = iteration;
 }
 
-void Fractal::setZoom(int x, int y, double scale)
+void Fractal::setZoom(double x, double y, double scale)
 {
     zoom.x = x;
     zoom.y = y;

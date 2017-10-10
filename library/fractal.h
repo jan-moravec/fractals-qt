@@ -13,11 +13,11 @@ public:
     void setIterations(int iteration);
 
     struct Zoom {
-        int x = 0;
-        int y = 0;
+        double x = 0;
+        double y = 0;
         double scale = 1.0;
     };
-    void setZoom(int x, int y, double scale);
+    void setZoom(double x, double y, double scale);
     void zoomIn(int x, int y, double scale);
     void zoomOut(void);
     Zoom getZoom();
