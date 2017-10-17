@@ -55,7 +55,7 @@ void Fractal::zoomOut(void)
     zoom.scale = z.scale;
 }
 
-Fractal::Zoom Fractal::getZoom()
+Fractal::Zoom Fractal::getZoom(void) const
 {
     return zoom;
 }
@@ -68,5 +68,22 @@ void Fractal::fillRgb(uint8_t *bufferRgb, const Palette::PaletteStruct &palette)
         bufferRgb[3*i + 1] = palette.palette[gray][1];
         bufferRgb[3*i + 2] = palette.palette[gray][2];
     }
+}
+
+void Fractal::setProgressFunction(std::function<void(double)> func)
+{
+    progressFunction = func;
+}
+
+void Fractal::updateProgress(double progressPercent)
+{
+    if (progressFunction != nullptr) {
+        progressFunction(progressPercent);
+    }
+}
+
+double Fractal::getProgressPercent(void) const
+{
+    return progress;
 }
 

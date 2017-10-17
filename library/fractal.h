@@ -2,6 +2,7 @@
 #define FRACTAL_H
 
 #include <stdint.h>
+#include <functional>
 #include "library/palette.h"
 
 class Fractal
@@ -20,7 +21,9 @@ public:
     void setZoom(double x, double y, double scale);
     void zoomIn(int x, int y, double scale);
     void zoomOut(void);
-    Zoom getZoom();
+    Zoom getZoom(void) const;
+    void setProgressFunction(std::function<void(double)> func);
+    double getProgressPercent(void) const;
 
     virtual void calculate() = 0;
     virtual void fillRgb(uint8_t *bufferRgb, const Palette::PaletteStruct &palette);
@@ -32,6 +35,10 @@ protected:
     uint8_t *grayBuffer = nullptr;
     Zoom zoom;
     std::vector<Zoom> zoomHistory;
+    double progress = 0;
+
+    std::function<void(double)> progressFunction = nullptr;
+    void updateProgress(double progressPercent);
 };
 
 #endif // FRACTAL_H

@@ -34,6 +34,7 @@ private:
     Fractal *mandelbrot;
 
     void paintFractal(void);
+    void updateProgress(double progress);
 };
 
 #endif // MAINWINDOW_H

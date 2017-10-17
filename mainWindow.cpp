@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
+    mandelbrot->setProgressFunction(std::bind( &MainWindow::updateProgress, this, std::placeholders::_1 ));
 }
 
 MainWindow::~MainWindow()
@@ -36,7 +37,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintFractal(void)
 {
-    ui->statusBar->showMessage("Painting", 3000);
+    ui->statusBar->showMessage("Painting ", 3000);
 
     int w = ui->widthSpinBox->value();
     int h = ui->heightSpinBox->value();
@@ -93,4 +94,9 @@ void MainWindow::zoomChangedSlot(int x, int y, double scale)
     ui->ZommXSpinBox->setValue(x);
     ui->ZoomYSpinBox->setValue(y);
     ui->ZoomScaleDoubleSpinBox->setValue(scale);
+}
+
+void MainWindow::updateProgress(double progress)
+{
+    ui->statusBar->showMessage("Painting " + QString::number(int(progress)) + "%", 3000);
 }
