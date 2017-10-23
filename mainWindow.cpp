@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(&progressTimer, SIGNAL(timeout()), this, SLOT(updateProgressSlot()));
-    connect(ui->paintWidget, SIGNAL(PaintWidget::zoomMouseSignal), this, SLOT(MainWindow::zoomChangedSlot));
+    connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
 }
 
 MainWindow::~MainWindow()
@@ -164,7 +164,8 @@ void MainWindow::updateProgress(double progress)
 void MainWindow::on_saveImageButton_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-            tr("Save Address Book"), "",
+            tr("Save Fractal Image"), "",
             tr("PNG Image (*.png);;JPEG Image (*.jpg);;BMP Image (*.bmp)"));
+
     ui->paintWidget->getImage()->save(fileName);
 }
