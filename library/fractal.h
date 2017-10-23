@@ -2,7 +2,6 @@
 #define FRACTAL_H
 
 #include <stdint.h>
-#include <functional>
 #include "library/palette.h"
 
 class Fractal
@@ -22,7 +21,6 @@ public:
     void zoomIn(int x, int y, double scale);
     void zoomOut(void);
     Zoom getZoom(void) const;
-    void setProgressFunction(std::function<void(double)> func);
     double getProgressPercent(void) const;
 
     virtual void calculate() = 0;
@@ -36,8 +34,6 @@ protected:
     Zoom zoom;
     std::vector<Zoom> zoomHistory;
     double progress = 0;
-
-    std::function<void(double)> progressFunction = nullptr;
     void updateProgress(double progressPercent);
 };
 

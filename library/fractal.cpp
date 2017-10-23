@@ -70,16 +70,9 @@ void Fractal::fillRgb(uint8_t *bufferRgb, const Palette::PaletteStruct &palette)
     }
 }
 
-void Fractal::setProgressFunction(std::function<void(double)> func)
-{
-    progressFunction = func;
-}
-
 void Fractal::updateProgress(double progressPercent)
 {
-    if (progressFunction != nullptr) {
-        progressFunction(progressPercent);
-    }
+    progress = progressPercent;
 }
 
 double Fractal::getProgressPercent(void) const

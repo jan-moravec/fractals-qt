@@ -10,8 +10,11 @@ Mandelbrot::Mandelbrot() : Fractal()
 
 void Mandelbrot::calculate()
 {
+    updateProgress(0);
+
     double step = 255.0 / iterationMax;
     int pixelTotal = width * height;
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // (-2, 2)

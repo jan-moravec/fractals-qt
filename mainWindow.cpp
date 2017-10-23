@@ -4,6 +4,7 @@
 
 #include "library/palette.h"
 #include "library/mandelbrot.h"
+#include "library/workThread.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->heightSpinBox->setValue(600);
     ui->iterationSpinBox->setValue(50);
 
+    ui->ZommXSpinBox->setEnabled(false);
+    ui->zoomInPushButton->setEnabled(false);
+    ui->zoomOutPushButton->setEnabled(false);
+    ui->ZoomYSpinBox->setEnabled(false);
+    ui->ZoomScaleDoubleSpinBox->setEnabled(false);
+
     palette = new Palette;
     mandelbrot = new Mandelbrot;
 
@@ -24,8 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->paletteComboBox->addItem(QString(palette->getPalette(i).name.c_str()));
     }
 
+    connect(&progressTimer, SIGNAL(timeout()), this, SLOT(updateProgressSlot()));
     connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
-    mandelbrot->setProgressFunction(std::bind( &MainWindow::updateProgress, this, std::placeholders::_1 ));
 }
 
 MainWindow::~MainWindow()
@@ -35,26 +42,70 @@ MainWindow::~MainWindow()
     delete rgb;
 }
 
-void MainWindow::paintFractal(void)
+void MainWindow::disableAll(void)
 {
-    ui->statusBar->showMessage("Painting ", 3000);
+    ui->heightSpinBox->setEnabled(false);
+    ui->iterationSpinBox->setEnabled(false);
+    ui->paintButton->setEnabled(false);
+    ui->paletteComboBox->setEnabled(false);
+    ui->widthSpinBox->setEnabled(false);
+    ui->ZommXSpinBox->setEnabled(false);
+    ui->zoomInPushButton->setEnabled(false);
+    ui->zoomOutPushButton->setEnabled(false);
+    ui->ZoomYSpinBox->setEnabled(false);
+    ui->ZoomScaleDoubleSpinBox->setEnabled(false);
+}
+
+void MainWindow::enableAll(void)
+{
+    ui->heightSpinBox->setEnabled(true);
+    ui->iterationSpinBox->setEnabled(true);
+    ui->paintButton->setEnabled(true);
+    ui->paletteComboBox->setEnabled(true);
+    ui->widthSpinBox->setEnabled(true);
+    ui->ZommXSpinBox->setEnabled(true);
+    ui->zoomInPushButton->setEnabled(true);
+    ui->zoomOutPushButton->setEnabled(true);
+    ui->ZoomYSpinBox->setEnabled(true);
+    ui->ZoomScaleDoubleSpinBox->setEnabled(true);
+}
+
+void MainWindow::calculateFractal(void)
+{
+    disableAll();
 
     int w = ui->widthSpinBox->value();
     int h = ui->heightSpinBox->value();
     mandelbrot->setSize(w, h);
     mandelbrot->setIterations(ui->iterationSpinBox->value());
-    mandelbrot->calculate();
+
+    WorkThread *workThread = new WorkThread(mandelbrot);
+    connect(workThread, WorkThread::finishedSignal, this, MainWindow::paintFractal);
+    workThread->start();
+    progressTimer.start(100);
+}
+
+void MainWindow::paintFractal(void)
+{
+    progressTimer.stop();
+    ui->statusBar->showMessage("Finished", 3000);
+
+    int w = ui->widthSpinBox->value();
+    int h = ui->heightSpinBox->value();
+
     delete rgb;
     rgb = new uint8_t[w * h * 3];
     mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
+
+    enableAll();
 }
 
 void MainWindow::on_paintButton_clicked()
 {
     qDebug() << "MainWindow::on_paintButton_clicked(): Painting";
-    paintFractal();
+    calculateFractal();
 }
 
 void MainWindow::on_paletteComboBox_currentIndexChanged(int index)
@@ -80,13 +131,13 @@ void MainWindow::on_ZoomScaleDoubleSpinBox_valueChanged(double)
 void MainWindow::on_zoomInPushButton_clicked()
 {
     mandelbrot->zoomIn(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
-    paintFractal();
+    calculateFractal();
 }
 
 void MainWindow::on_zoomOutPushButton_clicked()
 {
     mandelbrot->zoomOut();
-    paintFractal();
+    calculateFractal();
 }
 
 void MainWindow::zoomChangedSlot(int x, int y, double scale)
@@ -96,7 +147,12 @@ void MainWindow::zoomChangedSlot(int x, int y, double scale)
     ui->ZoomScaleDoubleSpinBox->setValue(scale);
 }
 
+void MainWindow::updateProgressSlot()
+{
+    double progress = mandelbrot->getProgressPercent();
+    updateProgress(progress);
+}
 void MainWindow::updateProgress(double progress)
 {
-    ui->statusBar->showMessage("Painting " + QString::number(int(progress)) + "%", 3000);
+    ui->statusBar->showMessage("Painting " + QString::number(int(progress)) + "%");
 }

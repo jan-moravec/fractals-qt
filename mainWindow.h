@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTimer>
 #include "library/fractal.h"
 
 namespace Ui {
@@ -18,6 +19,7 @@ public:
 
 private slots:
     void zoomChangedSlot(int x, int y, double scale);
+    void updateProgressSlot();
 
     void on_paintButton_clicked();
     void on_paletteComboBox_currentIndexChanged(int index);
@@ -32,9 +34,13 @@ private:
     uint8_t *rgb;
     Palette *palette;
     Fractal *mandelbrot;
+    QTimer progressTimer;
 
+    void calculateFractal(void);
     void paintFractal(void);
     void updateProgress(double progress);
+    void disableAll(void);
+    void enableAll(void);
 };
 
 #endif // MAINWINDOW_H

@@ -17,14 +17,16 @@ SOURCES += \
     graphic/paintWidget.cpp \
     library/fractal.cpp \
     library/mandelbrot.cpp \
-    library/palette.cpp
+    library/palette.cpp \
+    library/workThread.cpp
 
 HEADERS += \
         mainWindow.h \
     graphic/paintWidget.h \
     library/fractal.h \
     library/mandelbrot.h \
-    library/palette.h
+    library/palette.h \
+    library/workThread.h
 
 FORMS += \
         mainWindow.ui
