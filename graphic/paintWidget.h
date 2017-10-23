@@ -11,6 +11,7 @@ public:
     explicit PaintWidget(QWidget *parent = nullptr);
     ~PaintWidget();
     void setImage(uint8_t *bufferRgb, int width, int height);
+    const QImage *getImage(void) const { return image; }
     void drawZoom(int x, int y, double scale);
 
 signals:

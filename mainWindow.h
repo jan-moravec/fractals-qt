@@ -29,6 +29,8 @@ private slots:
     void on_zoomInPushButton_clicked();
     void on_zoomOutPushButton_clicked();
 
+    void on_saveImageButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     uint8_t *rgb;

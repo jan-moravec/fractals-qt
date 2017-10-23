@@ -1,6 +1,7 @@
 #include "mainWindow.h"
 #include "ui_mainWindow.h"
 #include <QDebug>
+#include <QFileDialog>
 
 #include "library/palette.h"
 #include "library/mandelbrot.h"
@@ -23,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->zoomOutPushButton->setEnabled(false);
     ui->ZoomYSpinBox->setEnabled(false);
     ui->ZoomScaleDoubleSpinBox->setEnabled(false);
+    ui->saveImageButton->setEnabled(false);
 
     palette = new Palette;
     mandelbrot = new Mandelbrot;
@@ -32,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(&progressTimer, SIGNAL(timeout()), this, SLOT(updateProgressSlot()));
-    connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
+    connect(ui->paintWidget, SIGNAL(PaintWidget::zoomMouseSignal), this, SLOT(MainWindow::zoomChangedSlot));
 }
 
 MainWindow::~MainWindow()
@@ -54,6 +56,7 @@ void MainWindow::disableAll(void)
     ui->zoomOutPushButton->setEnabled(false);
     ui->ZoomYSpinBox->setEnabled(false);
     ui->ZoomScaleDoubleSpinBox->setEnabled(false);
+    ui->saveImageButton->setEnabled(false);
 }
 
 void MainWindow::enableAll(void)
@@ -68,6 +71,7 @@ void MainWindow::enableAll(void)
     ui->zoomOutPushButton->setEnabled(true);
     ui->ZoomYSpinBox->setEnabled(true);
     ui->ZoomScaleDoubleSpinBox->setEnabled(true);
+    ui->saveImageButton->setEnabled(true);
 }
 
 void MainWindow::calculateFractal(void)
@@ -155,4 +159,12 @@ void MainWindow::updateProgressSlot()
 void MainWindow::updateProgress(double progress)
 {
     ui->statusBar->showMessage("Painting " + QString::number(int(progress)) + "%");
+}
+
+void MainWindow::on_saveImageButton_clicked()
+{
+    QString fileName = QFileDialog::getSaveFileName(this,
+            tr("Save Address Book"), "",
+            tr("PNG Image (*.png);;JPEG Image (*.jpg);;BMP Image (*.bmp)"));
+    ui->paintWidget->getImage()->save(fileName);
 }
