@@ -32,18 +32,13 @@ void PaintWidget::paintEvent(QPaintEvent *event)
         offsetY = (this->height() - imScaled.height()) / 2;
     }
 
-    /*int x, y, w, h;
-    double scale = (double)imScaled.width() / image->width();
-    x = zoomRect->x()*scale + offsetX;
-    y = zoomRect->y()*scale + offsetY;
-    w = zoomRect->width()*scale;
-    h = zoomRect->height()*scale;*/
-
     QRect rectZoom = recalculateZoomPaint(*zoomRect);
 
     QPainter painter(this);
     painter.drawImage(offsetX, offsetY, imScaled);
-    painter.drawRect(rectZoom);
+    if (isZoomVisible) {
+        painter.drawRect(rectZoom);
+    }
     QWidget::paintEvent(event);
 }
 
@@ -131,6 +126,7 @@ void PaintWidget::mousePressEvent(QMouseEvent *event)
 
     *zoomRectMouse = QRect(event->pos(), event->pos());
     *zoomRect = recalculateZoomFractal(*zoomRectMouse);
+    isZoomVisible = true;
     this->update();
 }
 

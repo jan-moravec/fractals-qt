@@ -96,16 +96,23 @@ void MainWindow::calculateFractal(void)
 void MainWindow::paintFractal(void)
 {
     progressTimer.stop();
-    ui->statusBar->showMessage("Finished", 3000);
 
     int w = std::round(ui->widthSpinBox->value() * ui->scaleDoubleSpinBox->value());
     int h = std::round(ui->heightSpinBox->value() * ui->scaleDoubleSpinBox->value());
+    QString statusText = "Resolution " + QString::number(w) + "x" + QString::number(h);
+    statusText += ", Zoom " + QString::number(mandelbrot->getZoom().scale, 'f', 3) + "x";
+    ui->statusBar->showMessage(statusText);
 
     delete[] rgb;
     rgb = new uint8_t[w * h * 3];
     mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
+    ui->paintWidget->setZoomVisible(false);
     ui->paintWidget->update();
+
+    ui->ZommXSpinBox->setValue(0);
+    ui->ZoomYSpinBox->setValue(0);
+    ui->ZoomScaleDoubleSpinBox->setValue(1.0);
 
     state = AppState::PAINTED;
     enableAll();
@@ -125,16 +132,19 @@ void MainWindow::on_paletteComboBox_currentIndexChanged(int index)
 void MainWindow::on_ZommXSpinBox_valueChanged(int)
 {
     ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+    ui->paintWidget->setZoomVisible(true);
 }
 
 void MainWindow::on_ZoomYSpinBox_valueChanged(int)
 {
     ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+    ui->paintWidget->setZoomVisible(true);
 }
 
 void MainWindow::on_ZoomScaleDoubleSpinBox_valueChanged(double)
 {
     ui->paintWidget->drawZoom(ui->ZommXSpinBox->value(), ui->ZoomYSpinBox->value(), ui->ZoomScaleDoubleSpinBox->value());
+    ui->paintWidget->setZoomVisible(true);
 }
 
 void MainWindow::on_zoomInPushButton_clicked()

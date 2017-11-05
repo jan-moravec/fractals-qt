@@ -13,6 +13,7 @@ public:
     void setImage(uint8_t *bufferRgb, int width, int height);
     const QImage *getImage(void) const { return image; }
     void drawZoom(int x, int y, double scale);
+    void setZoomVisible(bool visible) { isZoomVisible = visible; update(); }
 
 signals:
     void zoomMouseSignal(int x, int y, double scale);
@@ -20,6 +21,7 @@ signals:
 private:
     QImage *image = nullptr;
     QRect *zoomRect = nullptr;
+    bool isZoomVisible = false;
     QRect *zoomRectMouse = nullptr;
     QMutex paintMutex;
     QRect recalculateZoomPaint(const QRect &zoomFractal);
