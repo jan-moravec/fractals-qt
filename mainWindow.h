@@ -31,12 +31,21 @@ private slots:
 
     void on_saveImageButton_clicked();
 
+    void on_scaleDoubleSpinBox_valueChanged(double arg1);
+
+    void on_widthSpinBox_valueChanged(int arg1);
+
+    void on_heightSpinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
-    uint8_t *rgb;
-    Palette *palette;
-    Fractal *mandelbrot;
+    uint8_t *rgb = nullptr;
+    Palette *palette = nullptr;
+    Fractal *mandelbrot = nullptr;
     QTimer progressTimer;
+
+    enum class AppState{ NOT_PAINTED, PAINTED };
+    AppState state = AppState::NOT_PAINTED;
 
     void calculateFractal(void);
     void paintFractal(void);

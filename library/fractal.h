@@ -13,8 +13,10 @@ public:
     void setIterations(int iteration);
 
     struct Zoom {
-        double x = 0;
+        double x = 0; // Resolution coordinate
         double y = 0;
+        double xRel = 0; // Relative coordinate [0-1]
+        double yRel = 0;
         double scale = 1.0;
     };
     void setZoom(double x, double y, double scale);

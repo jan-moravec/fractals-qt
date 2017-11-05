@@ -19,12 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->heightSpinBox->setValue(600);
     ui->iterationSpinBox->setValue(50);
 
-    ui->ZommXSpinBox->setEnabled(false);
-    ui->zoomInPushButton->setEnabled(false);
-    ui->zoomOutPushButton->setEnabled(false);
-    ui->ZoomYSpinBox->setEnabled(false);
-    ui->ZoomScaleDoubleSpinBox->setEnabled(false);
-    ui->saveImageButton->setEnabled(false);
+    disableAll();
+    enableAll();
 
     palette = new Palette;
     mandelbrot = new Mandelbrot;
@@ -41,7 +37,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete palette;
-    delete rgb;
+    delete[] rgb;
 }
 
 void MainWindow::disableAll(void)
@@ -57,29 +53,37 @@ void MainWindow::disableAll(void)
     ui->ZoomYSpinBox->setEnabled(false);
     ui->ZoomScaleDoubleSpinBox->setEnabled(false);
     ui->saveImageButton->setEnabled(false);
+    ui->scaleDoubleSpinBox->setEnabled(false);
 }
 
 void MainWindow::enableAll(void)
 {
-    ui->heightSpinBox->setEnabled(true);
+    if (state == AppState::NOT_PAINTED) {
+        ui->heightSpinBox->setEnabled(true);
+        ui->widthSpinBox->setEnabled(true);
+    }
+
     ui->iterationSpinBox->setEnabled(true);
     ui->paintButton->setEnabled(true);
     ui->paletteComboBox->setEnabled(true);
-    ui->widthSpinBox->setEnabled(true);
-    ui->ZommXSpinBox->setEnabled(true);
-    ui->zoomInPushButton->setEnabled(true);
-    ui->zoomOutPushButton->setEnabled(true);
-    ui->ZoomYSpinBox->setEnabled(true);
-    ui->ZoomScaleDoubleSpinBox->setEnabled(true);
-    ui->saveImageButton->setEnabled(true);
+    ui->scaleDoubleSpinBox->setEnabled(true);
+
+    if (state == AppState::PAINTED) {
+        ui->ZommXSpinBox->setEnabled(true);
+        ui->zoomInPushButton->setEnabled(true);
+        ui->zoomOutPushButton->setEnabled(true);
+        ui->ZoomYSpinBox->setEnabled(true);
+        ui->ZoomScaleDoubleSpinBox->setEnabled(true);
+        ui->saveImageButton->setEnabled(true);
+    }
 }
 
 void MainWindow::calculateFractal(void)
 {
     disableAll();
 
-    int w = ui->widthSpinBox->value();
-    int h = ui->heightSpinBox->value();
+    int w = std::round(ui->widthSpinBox->value() * ui->scaleDoubleSpinBox->value());
+    int h = std::round(ui->heightSpinBox->value() * ui->scaleDoubleSpinBox->value());
     mandelbrot->setSize(w, h);
     mandelbrot->setIterations(ui->iterationSpinBox->value());
 
@@ -94,15 +98,16 @@ void MainWindow::paintFractal(void)
     progressTimer.stop();
     ui->statusBar->showMessage("Finished", 3000);
 
-    int w = ui->widthSpinBox->value();
-    int h = ui->heightSpinBox->value();
+    int w = std::round(ui->widthSpinBox->value() * ui->scaleDoubleSpinBox->value());
+    int h = std::round(ui->heightSpinBox->value() * ui->scaleDoubleSpinBox->value());
 
-    delete rgb;
+    delete[] rgb;
     rgb = new uint8_t[w * h * 3];
     mandelbrot->fillRgb(rgb, palette->getCurrent());
     ui->paintWidget->setImage(rgb, w, h);
     ui->paintWidget->update();
 
+    state = AppState::PAINTED;
     enableAll();
 }
 
@@ -168,4 +173,31 @@ void MainWindow::on_saveImageButton_clicked()
             tr("PNG Image (*.png);;JPEG Image (*.jpg);;BMP Image (*.bmp)"));
 
     ui->paintWidget->getImage()->save(fileName);
+}
+
+void MainWindow::on_scaleDoubleSpinBox_valueChanged(double arg1)
+{
+    int w = ui->widthSpinBox->value();
+    int h = ui->heightSpinBox->value();
+
+    w = std::round(w * arg1);
+    h = std::round(h * arg1);
+
+    ui->widthScaledLabel->setText(QString::number(w));
+    ui->heightScaledLabel->setText(QString::number(h));
+}
+
+
+void MainWindow::on_widthSpinBox_valueChanged(int arg1)
+{
+    int w = arg1;
+    w = std::round(w * ui->scaleDoubleSpinBox->value());
+    ui->widthScaledLabel->setText(QString::number(w));
+}
+
+void MainWindow::on_heightSpinBox_valueChanged(int arg1)
+{
+    int h = arg1;
+    h = std::round(h * ui->scaleDoubleSpinBox->value());
+    ui->heightScaledLabel->setText(QString::number(h));
 }

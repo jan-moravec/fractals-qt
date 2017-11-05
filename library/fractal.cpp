@@ -29,6 +29,8 @@ void Fractal::setZoom(double x, double y, double scale)
 {
     zoom.x = x;
     zoom.y = y;
+    zoom.xRel = x / width;
+    zoom.yRel = y / height;
     zoom.scale = scale;
 }
 
@@ -38,6 +40,8 @@ void Fractal::zoomIn(int x, int y, double scale)
 
     zoom.x += x / zoom.scale;
     zoom.y += y / zoom.scale;
+    zoom.xRel += x / zoom.scale / width;
+    zoom.yRel += y / zoom.scale / height;
     zoom.scale *= scale;
 }
 
@@ -52,6 +56,8 @@ void Fractal::zoomOut(void)
 
     zoom.x = z.x;
     zoom.y = z.y;
+    zoom.xRel = z.xRel;
+    zoom.yRel = z.yRel;
     zoom.scale = z.scale;
 }
 
