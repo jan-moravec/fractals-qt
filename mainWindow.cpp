@@ -2,6 +2,7 @@
 #include "ui_mainWindow.h"
 #include <QDebug>
 #include <QFileDialog>
+#include <cmath>
 
 #include "library/palette.h"
 #include "library/mandelbrot.h"
@@ -30,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     connect(&progressTimer, SIGNAL(timeout()), this, SLOT(updateProgressSlot()));
-    connect(ui->paintWidget, PaintWidget::zoomMouseSignal, this, MainWindow::zoomChangedSlot);
+    connect(ui->paintWidget, &PaintWidget::zoomMouseSignal, this, &MainWindow::zoomChangedSlot);
 }
 
 MainWindow::~MainWindow()
@@ -88,7 +89,7 @@ void MainWindow::calculateFractal(void)
     mandelbrot->setIterations(ui->iterationSpinBox->value());
 
     WorkThread *workThread = new WorkThread(mandelbrot);
-    connect(workThread, WorkThread::finishedSignal, this, MainWindow::paintFractal);
+    connect(workThread, &WorkThread::finishedSignal, this, &MainWindow::paintFractal);
     workThread->start();
     progressTimer.start(100);
 }
